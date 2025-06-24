@@ -1,0 +1,15 @@
+# Ignorar configurações locais
+.env
+config/database.php
+.htaccess
+
+# Ignorar dependências
+/vendor/
+
+# Ignorar arquivos temporários
+/tmp/
+*.log
+
+# Ignorar backups ou arquivos do XAMPP/phpMyAdmin
+*.sql
+*.bak

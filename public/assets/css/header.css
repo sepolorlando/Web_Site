@@ -1,0 +1,95 @@
+/* Header superior */
+.top-header {
+  background: white;
+  padding: 14px 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  height: 100%; /* garante alinhamento vertical se usado em uma barra de navegação */
+  padding: 0 10px;
+}
+
+.logo img {
+  height: 80px; /* ajusta a altura do logo */
+  width: auto;  /* mantém proporção da imagem */
+  max-width: 100%;
+  display: block;
+}
+
+.search-container {
+  flex: 1;
+  position: relative;
+  max-width: 600px;
+}
+
+.search-container input {
+  width: 100%;
+  padding: 10px 40px 10px 16px;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+}
+
+.search-container i {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6b7280;
+}
+
+/* Icons e botão */
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.header-icons i {
+  font-size: 16px;
+  color: #111827;
+  cursor: pointer;
+}
+
+.contact-btn {
+  background: #f97316;
+  color: white;
+  padding: 10px 16px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+/* Menu horizontal */
+.main-nav {
+  background-color: #f9fafb;
+  padding: 8px 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.main-nav ul {
+  display: flex;
+  justify-content: center;
+  list-style: none;
+  gap: 30px;
+}
+
+.main-nav a {
+  text-decoration: none;
+  color: #374151;
+  font-size: 14px;
+}
+
+.main-nav a:hover {
+  color: #1d4ed8;
+}

@@ -1,62 +1,59 @@
-<!-- Arquivo: index.php -->
 <?php
 require_once __DIR__ . '/../includes/header.php';
 require_once __DIR__ . '/../includes/db.php';
 ?>
 
-<header class="inwood-header">
-    <div class="container">
-        <h1>INWOOD</h1>
-        <nav>
-            <ul>
-                <li><a href="#">Products</a></li>
-                <li><a href="#">Contact Us</a></li>
-            </ul>
-        </nav>
-    </div>
-</header>
+<div class="container">
+  <div class="main-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <h3>Categorias</h3>
+      <ul>
+        <li><a href="#" class="active">Todos os produtos <span>(25)</span></a></li>
+        <li><a href="#">Acessórios <span>(8)</span></a></li>
+        <li><a href="#">Decoração <span>(12)</span></a></li>
+        <li><a href="#">Ferramentas <span>(6)</span></a></li>
+        <li><a href="#">Materiais <span>(15)</span></a></li>
+        <li><a href="#">Móveis <span>(9)</span></a></li>
+        <li><a href="#">Projetos <span>(4)</span></a></li>
+        <li><a href="#">Promoções <span>(7)</span></a></li>
+        <li><a href="#">Serviços <span>(3)</span></a></li>
+      </ul>
+    </aside>
 
-<section class="search-section">
-    <div class="container">
-        <h2>Search</h2>
-        <div class="categories">
-            <a href="#">Bedroom</a>
-            <a href="#">Dining Room</a>
-            <a href="#">Meeting Room</a>
-            <a href="#">Workspace</a>
-            <a href="#">Living Room</a>
-            <a href="#">Kitchen</a>
-            <a href="#">Living Space</a>
+    <!-- Conteúdo principal -->
+    <section class="product-area">
+      <div class="top-bar">
+        <input type="text" placeholder="Pesquisar...">
+        <div class="top-actions">
+          <select>
+            <option>Destaques</option>
+            <option>Mais baratos</option>
+            <option>Mais caros</option>
+          </select>
+          <button class="filter-btn"><i class="fas fa-filter"></i> Filtros</button>
         </div>
-    </div>
-</section>
+      </div>
 
-<section class="featured-products">
-    <div class="container">
-        <h2>Featured Products</h2>
-        <div class="products-grid">
-            <?php
-            // Busca produtos no banco de dados
-            $stmt = $pdo->query("SELECT * FROM products LIMIT 4");
-            while ($product = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                echo '<div class="product-card">';
-                echo '<img src="/assets/images/' . htmlspecialchars($product['image']) . '" alt="' . htmlspecialchars($product['name']) . '">';
-                echo '<h3>' . htmlspecialchars($product['name']) . '</h3>';
-                echo '<p class="price">' . number_format($product['price'], 2, ',', '.') . ' $</p>';
-                echo '<button class="add-to-cart" data-id="' . $product['id'] . '">Add to Cart</button>';
-                echo '</div>';
-            }
-            ?>
-        </div>
-    </div>
-</section>
+      <div class="products-grid">
+        <?php
+        $stmt = $conn->query("SELECT p.id, p.nome, p.preco, i.caminho_imagem FROM Produtos p LEFT JOIN Imagens_Produtos i ON p.id = i.produto_id AND i.ordem = 1");
+        while ($product = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo '<div class="card">';
+            echo '  <img src="/public/' . htmlspecialchars(strtolower($product['caminho_imagem'])) . '" alt="' . htmlspecialchars($product['nome']) . '">';
+            echo '  <div class="card-body">';
+            echo '    <h4>' . htmlspecialchars($product['nome']) . '</h4>';
+            echo '    <div class="card-footer">';
+            echo '      <span class="price">' . number_format($product['preco'], 2, ',', '.') . ' $</span>';
+            echo '      <button class="add-btn">Adicionar</button>';
+            echo '    </div>';
+            echo '  </div>';
+            echo '</div>';
+        }
+        ?>
+      </div>
+    </section>
+  </div>
+</div>
 
-<section class="all-categories">
-    <div class="container">
-        <a href="#" class="btn">All Categories</a>
-    </div>
-</section>
-
-<?php
-require_once __DIR__ . '/../includes/footer.php';
-?>
+<?php require_once __DIR__ . '/../includes/footer.php'; ?>

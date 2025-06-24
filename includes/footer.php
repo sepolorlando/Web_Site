@@ -1,6 +1,6 @@
 <footer class="inwood-footer">
     <div class="container">
-        <p>&copy; <?php echo date('Y'); ?> softspace. All rights reserved.</p>
+        <p>&copy; <?php echo date('Y'); ?> Aleida Tavares. All rights reserved.</p>
     </div>
 </footer>
 
