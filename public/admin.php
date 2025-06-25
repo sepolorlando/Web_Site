@@ -1,1 +1,0 @@
-<!-- Arquivo: admin.php -->

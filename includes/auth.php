@@ -1,1 +1,0 @@
-<!-- Arquivo: auth.php -->

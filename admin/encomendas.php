@@ -1,1 +1,0 @@
-<!-- Arquivo: encomendas.php -->

@@ -20,8 +20,8 @@
     </div>
     <div class="header-icons">
       <i class="fas fa-shopping-cart"></i>
-      <i class="fas fa-user"></i>
-      <a href="#" class="contact-btn">Entre em contato</a>
+      
+      <a href="#" class="contact-btn"> <i class="fas fa-user"></i>Entre em contato</a>
     </div>
   </div>
 
@@ -35,3 +35,4 @@
     </ul>
   </nav>
 </header>
+<script src="/public/assets/js/main.js" defer></script>

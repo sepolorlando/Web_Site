@@ -1,15 +1,15 @@
-<!-- Arquivo: db.php -->
 <?php
 // Configurações do banco de dados
 define('DB_HOST', 'localhost');
+define('DB_PORT', '3307');  // troque se usar outra porta no XAMPP
 define('DB_NAME', 'mercearia_online');
 define('DB_USER', 'root');
-define('DB_PASS', 'admin');
+define('DB_PASS', '');
 
 try {
     // Cria a conexão PDO
     $conn = new PDO(
-        "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME . ";charset=utf8",
+        "mysql:host=" . DB_HOST . ";port=" . DB_PORT . ";dbname=" . DB_NAME . ";charset=utf8",
         DB_USER,
         DB_PASS,
         [
@@ -18,13 +18,8 @@ try {
             PDO::ATTR_EMULATE_PREPARES => false
         ]
     );
-    
-    // echo "Conexão bem-sucedida!"; // Remova em produção
 } catch (PDOException $e) {
-    // Registra o erro em um arquivo de log em produção
+    // Registra o erro em log
     error_log("Erro de conexão: " . $e->getMessage());
-    
-    // Exibe mensagem amigável em ambiente de desenvolvimento
     die("Erro ao conectar ao banco de dados. Por favor, tente novamente mais tarde.");
 }
-?>
