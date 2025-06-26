@@ -1,6 +1,8 @@
 document.addEventListener('DOMContentLoaded', function () {
   carregarCategorias();
-  carregarProdutos(); // todos
+  carregarProdutos();
+  atualizarContadorCarrinho();
+  ativarCliqueCarrinho();
 
   function carregarCategorias() {
     fetch('/api/get_categorias.php')
@@ -43,12 +45,69 @@ document.addEventListener('DOMContentLoaded', function () {
               <h4>${produto.nome}</h4>
               <div class="card-footer">
                 <span class="price">${produto.preco} $</span>
-                <button class="add-btn">Adicionar</button>
+                <button class="add-btn" data-id="${produto.id}">Adicionar</button>
               </div>
             </div>
           `;
           grid.appendChild(card);
         });
+
+        document.querySelectorAll('.add-btn').forEach(button => {
+          button.addEventListener('click', () => {
+            const produtoId = button.dataset.id;
+
+            if (button.disabled) return;
+
+            adicionarAoCarrinho(produtoId);
+
+            button.disabled = true;
+            button.style.backgroundColor = '#d1d5db';
+            button.textContent = 'Adicionado!';
+
+            setTimeout(() => {
+              button.disabled = false;
+              button.textContent = 'Adicionar';
+              button.style.backgroundColor = '';
+            }, 1000); // Espera de 1 segundos
+          });
+        });
       });
+  }
+
+  function adicionarAoCarrinho(produtoId) {
+    let carrinho = JSON.parse(localStorage.getItem('carrinho')) || {};
+
+    if (carrinho[produtoId]) {
+      carrinho[produtoId] += 1;
+    } else {
+      carrinho[produtoId] = 1;
+    }
+
+    localStorage.setItem('carrinho', JSON.stringify(carrinho));
+    atualizarContadorCarrinho();
+  }
+
+  function atualizarContadorCarrinho() {
+    const carrinho = JSON.parse(localStorage.getItem('carrinho')) || {};
+    let total = 0;
+
+    for (const id in carrinho) {
+      total += carrinho[id];
+    }
+
+    const badge = document.querySelector('.cart-count');
+    if (badge) {
+      badge.textContent = total;
+    }
+  }
+
+  function ativarCliqueCarrinho() {
+    const cartIcon = document.querySelector('.cart-icon');
+    if (cartIcon) {
+      cartIcon.addEventListener('click', (e) => {
+        e.preventDefault(); // impede scroll para o topo
+        window.location.href = '/carrinho.php';
+      });
+    }
   }
 });

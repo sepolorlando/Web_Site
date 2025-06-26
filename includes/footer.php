@@ -5,5 +5,6 @@
 </footer>
 
 <script src="/assets/js/main.js"></script>
+<script src="/assets/js/carrinho.js"></script>
 </body>
 </html>

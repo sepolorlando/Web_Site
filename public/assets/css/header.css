@@ -1,95 +1,104 @@
-/* Header superior */
+:root {
+  --laranja: #f97316;
+  --laranja-hover: #ea580c;
+  --cinza-escuro: #374151;
+  --cinza-claro: #f9fafb;
+  --borda-clara: #e5e7eb;
+}
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* Header */
 .top-header {
   background: white;
-  padding: 14px 0;
-  border-bottom: 1px solid #e5e7eb;
+  padding: 25px 0;
+  border-bottom: 1px solid var(--borda-clara);
 }
 
 .header-inner {
+  max-width: 1200px;
+  margin: auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 20px;
   flex-wrap: wrap;
+  padding: 0 20px;
+  gap: 20px;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  height: 100%; /* garante alinhamento vertical se usado em uma barra de navegação */
-  padding: 0 10px;
-}
-
+/* Logo */
 .logo img {
-  height: 80px; /* ajusta a altura do logo */
-  width: auto;  /* mantém proporção da imagem */
+  height: 60px;
   max-width: 100%;
   display: block;
 }
 
-.search-container {
-  flex: 1;
-  position: relative;
-  max-width: 600px;
-}
+/* Menu */
 
-.search-container input {
-  width: 100%;
-  padding: 10px 40px 10px 16px;
-  border-radius: 8px;
-  border: 1px solid #d1d5db;
-}
-
-.search-container i {
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: #6b7280;
-}
-
-/* Icons e botão */
-.header-icons {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.header-icons i {
-  font-size: 16px;
-  color: #111827;
-  cursor: pointer;
-}
-
-.contact-btn {
-  background: #f97316;
-  color: white;
-  padding: 10px 16px;
-  border-radius: 6px;
-  font-size: 14px;
-  text-decoration: none;
-}
-
-/* Menu horizontal */
-.main-nav {
-  background-color: #f9fafb;
-  padding: 8px 0;
-  border-top: 1px solid #e5e7eb;
-}
 
 .main-nav ul {
-  display: flex;
-  justify-content: center;
   list-style: none;
-  gap: 30px;
+  display: flex;
+  gap: 24px;
+  padding: 0;
+  margin: 0;
 }
 
 .main-nav a {
   text-decoration: none;
-  color: #374151;
-  font-size: 14px;
+  color: var(--cinza-escuro);
+  font-size: 20px;
+  font-weight: 500;
+  transition: color 0.3s ease;
 }
 
 .main-nav a:hover {
-  color: #1d4ed8;
+  color: var(--laranja);
+}
+
+/* Ícones e botão */
+.header-icons {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.cart-icon {
+  position: relative;
+  color: var(--cinza-escuro);
+  font-size: 25px;
+  cursor: pointer;
+}
+
+.cart-count {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background: var(--laranja);
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 6px;
+  border-radius: 10px;
+}
+
+.contact-btn {
+  background: var(--laranja);
+  color: white;
+  padding: 8px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  text-decoration: none;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.3s ease;
+}
+
+.contact-btn:hover {
+  background: var(--laranja-hover);
 }

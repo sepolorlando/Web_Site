@@ -171,6 +171,25 @@ body {
 .add-btn:hover {
   background-color: #1e40af;
 }
+.add-btn {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.add-btn:hover:not(:disabled) {
+  background-color: #93c5fd; /* cinza claro/azulado */
+  color: #1e3a8a;
+}
+
+.add-btn:disabled {
+  cursor: not-allowed;
+}
 
 /* Responsivo */
 @media (max-width: 960px) {
@@ -186,3 +205,5 @@ body {
     flex-direction: column;
   }
 }
+
+
