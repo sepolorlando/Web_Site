@@ -1,6 +1,58 @@
-// Variável global para armazenar categorias
-let categorias = [];
+// Gerenciador central de categorias
+const categoryManager = {
+    categories: [],
+    loaded: false,
 
+    async load() {
+        try {
+            const response = await fetch('/api/get_categorias2.php');
+            const data = await response.json();
+            
+            if (data.success) {
+                this.categories = data.categories || data.data; // Compatível com diferentes formatos de resposta
+                this.loaded = true;
+                console.log('Categorias carregadas:', this.categories);
+            } else {
+                console.error('Erro ao carregar categorias:', data.message || data.error);
+                throw new Error(data.message || 'Erro ao carregar categorias');
+            }
+            return this.categories;
+        } catch (error) {
+            console.error('Erro ao carregar categorias:', error);
+            throw error;
+        }
+    },
+
+    async ensureLoaded() {
+        if (!this.loaded) {
+            await this.load();
+        }
+        return this.categories;
+    },
+
+    fillSelect(selectElement, selectedId = null) {
+        if (!selectElement) return;
+        
+        selectElement.innerHTML = '<option value="">Selecione uma categoria</option>';
+        
+        if (this.categories.length === 0) {
+            selectElement.innerHTML = '<option value="">Nenhuma categoria disponível</option>';
+            return;
+        }
+
+        this.categories.forEach(categoria => {
+            const option = document.createElement('option');
+            option.value = categoria.id;
+            option.textContent = categoria.nome;
+            if (selectedId && categoria.id == selectedId) {
+                option.selected = true;
+            }
+            selectElement.appendChild(option);
+        });
+    }
+};
+
+// Inicialização quando o DOM estiver pronto
 document.addEventListener('DOMContentLoaded', function () {
     // Carrega categorias e produtos ao iniciar
     loadCategoriesAndProducts();
@@ -16,21 +68,32 @@ document.addEventListener('DOMContentLoaded', function () {
         prepareModal(modalAdd);
     });
 
-    // Preview de imagens antes do upload
+    // Preview de imagens antes do upload (modal add)
     document.getElementById('img-input-modal').addEventListener('change', function (e) {
         const preview = document.getElementById('img-preview-modal');
         preview.innerHTML = '';
 
         if (this.files) {
             Array.from(this.files).forEach(file => {
+                if (!file.type.match('image.*')) return;
+
                 const reader = new FileReader();
 
                 reader.onload = function (event) {
-                    const img = document.createElement('img');
-                    img.src = event.target.result;
-                    img.classList.add('img-thumbnail');
-                    img.style.maxHeight = '100px';
-                    preview.appendChild(img);
+                    const imgContainer = document.createElement('div');
+                    imgContainer.className = 'position-relative d-inline-block';
+                    imgContainer.innerHTML = `
+                        <img src="${event.target.result}" class="img-thumbnail" style="height: 100px; object-fit: cover;">
+                        <button type="button" class="btn btn-sm btn-danger btn-remove-new-img position-absolute top-0 end-0 m-1">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    `;
+                    preview.appendChild(imgContainer);
+
+                    // Adiciona evento para remover imagem do preview
+                    imgContainer.querySelector('.btn-remove-new-img').addEventListener('click', function() {
+                        imgContainer.remove();
+                    });
                 }
 
                 reader.readAsDataURL(file);
@@ -38,176 +101,155 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Submit do formulário
-    document.getElementById('form-add').addEventListener('submit', function (e) {
+    // Submit do formulário de adição
+    document.getElementById('form-add').addEventListener('submit', async function (e) {
         e.preventDefault();
 
-        const formData = new FormData(this);
+        try {
+            const formData = new FormData(this);
+            
+            // Validação básica
+            if (!formData.get('nome') || !formData.get('categoria')) {
+                throw new Error('Preencha todos os campos obrigatórios');
+            }
 
-        fetch(this.action, {
-            method: 'POST',
-            body: formData
-        })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    modalAdd.hide();
-                    loadProducts();
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sucesso!',
-                        text: 'Produto adicionado com sucesso'
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Erro',
-                        text: data.message || 'Ocorreu um erro ao adicionar o produto'
-                    });
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Erro',
-                    text: 'Ocorreu um erro ao processar a requisição'
-                });
+            const response = await fetch(this.action, {
+                method: 'POST',
+                body: formData
             });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                modalAdd.hide();
+                loadProducts();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Sucesso!',
+                    text: 'Produto adicionado com sucesso',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+            } else {
+                throw new Error(data.message || 'Ocorreu um erro ao adicionar o produto');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Erro',
+                text: error.message || 'Ocorreu um erro ao processar a requisição'
+            });
+        }
     });
 });
 
+// Carrega categorias e produtos
 async function loadCategoriesAndProducts() {
     try {
-        // Carrega categorias
-        const categoriesResponse = await fetch('/api/get_categorias2.php');
-        const categoriesData = await categoriesResponse.json();
-
-        if (categoriesData.success) {
-            categorias = categoriesData.categories;
-            console.log('Categorias carregadas:', categorias);
-        } else {
-            console.error('Erro ao carregar categorias:', categoriesData.error);
-        }
-
-        // Carrega produtos
+        await categoryManager.load();
         loadProducts();
     } catch (error) {
-        console.error('Erro ao carregar dados iniciais:', error);
-        loadProducts(); // Tenta carregar produtos mesmo com erro
+        console.error('Erro ao carregar categorias:', error);
+        loadProducts(); // Tenta carregar produtos mesmo com erro nas categorias
     }
 }
 
-function prepareModal(modalInstance) {
-    // Limpa o formulário
+// Prepara o modal de adição
+async function prepareModal(modalInstance) {
     const form = document.getElementById('form-add');
     form.reset();
     document.getElementById('img-preview-modal').innerHTML = '';
 
-    // Preenche o select de categorias
     const selectCategoria = document.getElementById('selectCategoria');
-    selectCategoria.innerHTML = '<option value="">Selecione uma categoria</option>';
-
-    if (categorias && categorias.length > 0) {
-        categorias.forEach(categoria => {
-            const option = document.createElement('option');
-            option.value = categoria.id;
-            option.textContent = categoria.nome;
-            selectCategoria.appendChild(option);
-        });
-    } else {
-        selectCategoria.innerHTML = '<option value="">Nenhuma categoria disponível</option>';
-        console.warn('Nenhuma categoria foi carregada');
-
-        // Tenta recarregar categorias se estiverem vazias
-        fetch('/api/get_categorias.php')
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    categorias = data.categories;
-                    // Atualiza o select novamente
-                    data.categories.forEach(categoria => {
-                        const option = document.createElement('option');
-                        option.value = categoria.id;
-                        option.textContent = categoria.nome;
-                        selectCategoria.appendChild(option);
-                    });
-                }
-            });
+    try {
+        await categoryManager.ensureLoaded();
+        categoryManager.fillSelect(selectCategoria);
+    } catch (error) {
+        selectCategoria.innerHTML = '<option value="">Erro ao carregar categorias</option>';
+        console.error('Erro ao carregar categorias:', error);
     }
 
-    // Mostra o modal
     modalInstance.show();
 }
 
-function loadProducts() {
+// Carrega a lista de produtos
+async function loadProducts() {
     const filterName = document.getElementById('filterName').value;
     const filterStatus = document.getElementById('filterStatus').value;
 
-    fetch(`/api/get_products.php?name=${encodeURIComponent(filterName)}&status=${filterStatus}`)
-        .then(response => response.json())
-        .then(products => {
-            const tbody = document.getElementById('productBody');
-            tbody.innerHTML = '';
+    try {
+        const response = await fetch(`/api/get_products.php?name=${encodeURIComponent(filterName)}&status=${filterStatus}`);
+        const products = await response.json();
 
-            if (products.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" class="text-center">Nenhum produto encontrado</td></tr>';
-                return;
+        const tbody = document.getElementById('productBody');
+        tbody.innerHTML = '';
+
+        if (!products || products.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center">Nenhum produto encontrado</td></tr>';
+            return;
+        }
+
+        products.forEach(product => {
+            const row = document.createElement('tr');
+
+            // Formata o preço
+            let precoFormatado = '0,00';
+            if (product.preco) {
+                const precoNumerico = typeof product.preco === 'string' 
+                    ? parseFloat(product.preco.replace('.', '').replace(',', '.')) 
+                    : parseFloat(product.preco);
+                precoFormatado = precoNumerico.toFixed(2).replace('.', ',');
             }
 
-            products.forEach(product => {
-                const row = document.createElement('tr');
+            row.innerHTML = `
+                <td>
+                    ${product.imagem ?
+                    `<img src="${product.imagem}" alt="${product.nome}" class="img-thumbnail" width="50">` :
+                    '<i class="fas fa-box-open fa-lg text-muted"></i>'}
+                </td>
+                <td>${product.nome || 'Sem nome'}</td>
+                <td class="text-center">${product.quantidade || 0}</td>
+                <td class="text-center">
+                    ${product.publicado ?
+                    '<span class="badge bg-success">Publicado</span>' :
+                    '<span class="badge bg-secondary">Não publicado</span>'}
+                </td>
+                <td class="text-end">${precoFormatado} CVE</td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-outline-primary btn-edit" data-id="${product.id}">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${product.id}">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </td>
+            `;
 
-                // Converte preço de "990,00" para 990.00
-                const precoNumerico = parseFloat(product.preco.replace('.', '').replace(',', '.'));
-
-                row.innerHTML = `
-                    <td>
-                        ${product.imagem ?
-                        `<img src="${product.imagem}" alt="${product.nome}" class="img-thumbnail" width="50">` :
-                        '<i class="fas fa-box-open fa-lg text-muted"></i>'}
-                    </td>
-                    <td>${product.nome}</td>
-                    <td class="text-center">${product.quantidade}</td>
-                    <td class="text-center">
-                        <span class="badge bg-success">
-                            Publicado
-                        </span>
-                    </td>
-                    <td class="text-end">€ ${precoNumerico.toFixed(2)}</td>
-                    <td class="text-center">
-                        <button class="btn btn-sm btn-outline-primary btn-edit" data-id="${product.id}">
-                            <i class="fas fa-edit"></i>
-                        </button>
-                        <button class="btn btn-sm btn-outline-danger btn-delete" data-id="${product.id}">
-                            <i class="fas fa-trash"></i>
-                        </button>
-                    </td>
-                `;
-
-                tbody.appendChild(row);
-            });
-
-            // Adiciona eventos aos botões
-            document.querySelectorAll('.btn-edit').forEach(btn => {
-                btn.addEventListener('click', editProduct);
-            });
-
-            document.querySelectorAll('.btn-delete').forEach(btn => {
-                btn.addEventListener('click', deleteProduct);
-            });
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            const tbody = document.getElementById('productBody');
-            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Erro ao carregar produtos</td></tr>';
+            tbody.appendChild(row);
         });
+
+        // Adiciona eventos aos botões
+        document.querySelectorAll('.btn-edit').forEach(btn => {
+            btn.addEventListener('click', editProduct);
+        });
+
+        document.querySelectorAll('.btn-delete').forEach(btn => {
+            btn.addEventListener('click', deleteProduct);
+        });
+
+    } catch (error) {
+        console.error('Error:', error);
+        const tbody = document.getElementById('productBody');
+        tbody.innerHTML = '<tr><td colspan="6" class="text-center text-danger">Erro ao carregar produtos</td></tr>';
+    }
 }
+
+// Edita um produto
 async function editProduct(e) {
     const productId = e.currentTarget.getAttribute('data-id');
     
     try {
-        // 1. Verificar se os elementos existem
         const modalElement = document.getElementById('modalEdit');
         const formEdit = document.getElementById('form-edit');
         
@@ -215,10 +257,9 @@ async function editProduct(e) {
             throw new Error('Elementos do modal não encontrados');
         }
 
-        // 2. Inicializar o modal
         const modalEdit = new bootstrap.Modal(modalElement);
         
-        // 3. Buscar dados do produto (usando POST conforme sua API)
+        // Busca dados do produto
         const productResponse = await fetch(`/api/get_details_product.php`, {
             method: 'POST',
             headers: {
@@ -228,28 +269,27 @@ async function editProduct(e) {
         });
 
         const productData = await productResponse.json();
-console.log(productData)
+        
         if (!productData.success) {
             throw new Error(productData.message || 'Erro ao carregar produto');
         }
 
         const product = productData.data;
 
-        // 4. Preencher o formulário
+        // Preenche o formulário
         formEdit.querySelector('[name="id"]').value = product.id;
-        formEdit.querySelector('[name="nome"]').value = product.nome;
-        // formEdit.querySelector('[name="quantidade"]').value = product.quantidade;
-        //formEdit.querySelector('[name="preco"]').value = product.preco;
+        formEdit.querySelector('[name="nome"]').value = product.nome || '';
+        formEdit.querySelector('[name="quantidade"]').value = product.quantidade || 0;
+        formEdit.querySelector('[name="preco"]').value = product.preco || 0.00;
+        formEdit.querySelector('#chkPublicadoEdit').checked = product.publicado || false;
         
-        // Preencher categorias
-        const categoriaSelect = formEdit.querySelector('[name="categorias[]"]');
-        if (categoriaSelect) {
-            Array.from(categoriaSelect.options).forEach(option => {
-                option.selected = product.categorias?.includes(parseInt(option.value)) || false;
-            });
-        }
+        // Preenche categoria
+        const categoriaSelect = formEdit.querySelector('[name="categoria"]');
+        await categoryManager.ensureLoaded();
+        const selectedCategory = product.categorias && product.categorias.length > 0 ? product.categorias[0] : null;
+        categoryManager.fillSelect(categoriaSelect, selectedCategory);
         
-        // 5. Carregar preview das imagens
+        // Carrega preview das imagens
         const imgPreview = document.getElementById('img-preview-edit');
         imgPreview.innerHTML = '';
         
@@ -258,7 +298,7 @@ console.log(productData)
                 const imgContainer = document.createElement('div');
                 imgContainer.className = 'img-preview-item position-relative';
                 imgContainer.innerHTML = `
-                    <img src="${imagem.caminho}" class="img-thumbnail" style="height: 100px; object-fit: cover;">
+                    <img src="${imagem.caminho_imagem}" class="img-thumbnail" style="height: 100px; object-fit: cover;">
                     <button type="button" class="btn btn-sm btn-danger btn-remove-img position-absolute top-0 end-0 m-1" 
                             data-img-id="${imagem.id}" title="Remover imagem">
                         <i class="fas fa-times"></i>
@@ -268,7 +308,7 @@ console.log(productData)
             });
         }
         
-        // 6. Configurar evento de remoção de imagens
+        // Configura evento de remoção de imagens
         imgPreview.querySelectorAll('.btn-remove-img').forEach(btn => {
             btn.addEventListener('click', async function() {
                 const imgId = this.getAttribute('data-img-id');
@@ -290,7 +330,6 @@ console.log(productData)
                         throw new Error(result.message || 'Erro ao remover imagem');
                     }
                     
-                    // Remove visualmente a imagem
                     this.parentElement.remove();
                     
                     Swal.fire({
@@ -312,7 +351,7 @@ console.log(productData)
             });
         });
         
-        // 7. Configurar submit do formulário
+        // Configura submit do formulário
         const submitHandler = async function(e) {
             e.preventDefault();
             
@@ -331,8 +370,7 @@ console.log(productData)
                 }
                 
                 modalEdit.hide();
-                formEdit.removeEventListener('submit', submitHandler); // Remove o listener
-                loadProducts(); // Recarrega a lista de produtos
+                loadProducts();
                 
                 Swal.fire({
                     icon: 'success',
@@ -352,11 +390,9 @@ console.log(productData)
             }
         };
         
-        // Remove listener antigo se existir e adiciona o novo
         formEdit.removeEventListener('submit', submitHandler);
         formEdit.addEventListener('submit', submitHandler);
         
-        // 8. Mostrar o modal
         modalEdit.show();
         
     } catch (error) {
@@ -368,46 +404,54 @@ console.log(productData)
         });
     }
 }
-function deleteProduct(e) {
+
+// Exclui um produto
+async function deleteProduct(e) {
     const productId = e.currentTarget.getAttribute('data-id');
 
-    Swal.fire({
-        title: 'Tem certeza?',
-        text: "Você não poderá reverter isso!",
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#d33',
-        cancelButtonColor: '#3085d6',
-        confirmButtonText: 'Sim, excluir!'
-    }).then((result) => {
+    try {
+        const result = await Swal.fire({
+            title: 'Tem certeza?',
+            text: "Você não poderá reverter isso!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#d33',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: 'Sim, excluir!',
+            cancelButtonText: 'Cancelar'
+        });
+
         if (result.isConfirmed) {
-            fetch(`/api/delete_product.php`, {
+            const response = await fetch(`/api/delete_product.php`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ id: productId.toString() }) // Envia como string
-            })
-                .then(response => {
-                    if (!response.ok) {
-                        return response.json().then(err => Promise.reject(err));
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire('Excluído!', 'O produto foi excluído.', 'success');
-                        loadProducts();
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    Swal.fire(
-                        'Erro!',
-                        error.error || 'Ocorreu um erro ao excluir o produto.',
-                        'error'
-                    );
-                });
+                body: JSON.stringify({ id: productId })
+            });
+            
+            const data = await response.json();
+            
+            if (!data.success) {
+                throw new Error(data.message || 'Erro ao excluir produto');
+            }
+            
+            Swal.fire({
+                icon: 'success',
+                title: 'Excluído!',
+                text: 'O produto foi excluído.',
+                timer: 1500,
+                showConfirmButton: false
+            });
+            
+            loadProducts();
         }
-    });
+    } catch (error) {
+        console.error('Error:', error);
+        Swal.fire({
+            icon: 'error',
+            title: 'Erro',
+            text: error.message || 'Ocorreu um erro ao excluir o produto'
+        });
+    }
 }

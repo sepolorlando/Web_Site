@@ -10,9 +10,10 @@ if (!isset($_SESSION['account_loggedin'])) {
 
 <main class="main-content">
     <section class="slider">
-        <?php include '../backofice/partial/produtos_partial.php'; ?>
+         <?php include '../backofice/partial/produtos_partial.php'; ?>
     </section>
 </main>
 
 
+<script src="/public/assets/js/produtos.js"></script>
 <?php include '../includes/footer.php'; ?>

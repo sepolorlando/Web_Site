@@ -330,3 +330,30 @@
 .gap-2 {
     gap: 0.5rem;
 }
+/* Estilo para as miniaturas de imagem */
+#img-preview-edit .img-preview-item {
+    position: relative;
+    margin: 5px;
+    display: inline-block;
+}
+
+#img-preview-edit .img-thumbnail {
+    height: 100px;
+    width: auto;
+    object-fit: cover;
+}
+
+/* Estilo para os campos de dimensões */
+.input-group input[type="number"] {
+    max-width: 80px;
+}
+
+/* Estilo para o select múltiplo de categorias */
+select[multiple] {
+    min-height: 120px;
+}
+
+/* Espaçamento entre checkboxes */
+.form-check {
+    margin-bottom: 8px;
+}

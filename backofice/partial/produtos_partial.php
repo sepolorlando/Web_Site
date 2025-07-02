@@ -91,27 +91,64 @@
                     <h5 class="modal-title">Editar Produto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="form-edit" method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="id">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label class="form-label">Nome:</label>
-                            <input type="text" name="nome" class="form-control" required>
-                        </div>
+                <!-- Modal de Edição -->
+                <div id="modalEdit" class="modal fade" tabindex="-1">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title">Editar Produto</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <form id="form-edit" method="post" enctype="multipart/form-data">
+                                <input type="hidden" name="id">
+                                <div class="modal-body">
+                                    <div class="mb-3">
+                                        <label class="form-label">Nome:</label>
+                                        <input type="text" name="nome" class="form-control" required>
+                                    </div>
 
-                        <div class="mb-3">
-                            <label class="form-label">Imagens Atuais:</label>
-                            <div id="img-preview-edit" class="d-flex flex-wrap gap-2 mb-3"></div>
-                            <label class="form-label">Adicionar Novas Imagens:</label>
-                            <input type="file" name="imagens[]" class="form-control" accept="image/*" multiple>
-                        </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Imagens Atuais:</label>
+                                        <div id="img-preview-edit" class="d-flex flex-wrap gap-2 mb-3"></div>
+                                        <label class="form-label">Adicionar Novas Imagens:</label>
+                                        <input type="file" name="imagens[]" class="form-control" accept="image/*" multiple>
+                                    </div>
 
+                                    <div class="mb-3">
+                                        <label class="form-label">Categoria:</label>
+                                        <select name="categoria" class="form-select" required>
+                                            <option value="">Selecione uma categoria</option>
+                                            <!-- As opções serão preenchidas dinamicamente via JavaScript -->
+                                        </select>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Quantidade:</label>
+                                            <input type="number" name="quantidade" class="form-control" min="0" required>
+                                        </div>
+                                        <div class="col-md-6 mb-3">
+                                            <label class="form-label">Preço:</label>
+                                            <div class="input-group">
+                                                <input type="number" name="preco" class="form-control" step="0.01" min="0" required>
+                                                <span class="input-group-text">CVE</span>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="mb-3 form-check">
+                                        <input type="checkbox" name="publicado" class="form-check-input" id="chkPublicadoEdit">
+                                        <label for="chkPublicadoEdit" class="form-check-label">Publicar?</label>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <button type="submit" class="btn btn-primary">Salvar Alterações</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>

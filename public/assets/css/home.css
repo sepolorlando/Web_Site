@@ -114,6 +114,7 @@ body {
   margin-top: 60px;
   margin-left: 10%;
   width: 90%;
+  height: calc(100% - 30px);;
   padding: 20px;
   background-color: #fff;
 }
