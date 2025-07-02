@@ -3,8 +3,8 @@ require_once __DIR__ . '/../includes/db.php'; // Garante que $conn será incluí
 
 // Dados do novo utilizador
 $username = 'admin';
-$nome = 'orlando';
-$password = '1234';
+$nome = 'Administrador';
+$password = 'admin';
 
 // Gera hash da senha
 $hash = password_hash($password, PASSWORD_DEFAULT);
