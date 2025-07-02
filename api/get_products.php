@@ -6,7 +6,7 @@ $categoria_id = isset($_GET['categoria_id']) ? intval($_GET['categoria_id']) : 0
 
 if ($categoria_id > 0) {
     $sql = "
-        SELECT DISTINCT p.id, p.nome, p.preco, i.caminho_imagem
+        SELECT DISTINCT p.id, p.nome, p.preco, p.quantidade, i.caminho_imagem
         FROM produtos p
         INNER JOIN produto_categorias pc ON p.id = pc.produto_id
         LEFT JOIN imagens_produtos i ON p.id = i.produto_id AND i.ordem = 1
@@ -17,7 +17,7 @@ if ($categoria_id > 0) {
     $stmt->execute();
 } else {
     $sql = "
-        SELECT p.id, p.nome, p.preco, i.caminho_imagem
+        SELECT p.id, p.nome, p.preco, p.quantidade, i.caminho_imagem
         FROM produtos p
         LEFT JOIN imagens_produtos i ON p.id = i.produto_id AND i.ordem = 1
     ";
@@ -30,6 +30,7 @@ while ($product = $stmt->fetch(PDO::FETCH_ASSOC)) {
         'id' => $product['id'],
         'nome' => $product['nome'],
         'preco' => number_format($product['preco'], 2, ',', '.'),
+        'quantidade' => $product['quantidade'],
         'imagem' => '/public/' . strtolower($product['caminho_imagem']),
     ];
 }
