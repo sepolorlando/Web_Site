@@ -23,7 +23,7 @@
     <button class="toggle-btn"><i class="fas fa-bars"></i></button>
     <nav class="top-nav">
       <a href="/../"> Loja Online</a>
-      <a href="/backofice/perfil.php"> PERFIL</a>
+      <a href="/backofice/profile.php"> PERFIL</a>
       <a href="logout.php">
         <i class="fas fa-sign-out-alt"></i> Logout
       </a>
