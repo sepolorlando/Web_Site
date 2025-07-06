@@ -40,7 +40,7 @@
                     <h5 class="modal-title">Adicionar Produto</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-                <form id="form-add" method="post" action="/api/create_product.php" enctype="multipart/form-data">
+                <form id="form-add" method="post" action="../website/api/create_product.php" enctype="multipart/form-data">
                     <div class="modal-body">
                         <div class="mb-3">
                             <label class="form-label">Nome:</label>

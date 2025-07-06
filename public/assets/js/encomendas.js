@@ -34,7 +34,7 @@ window.addEventListener('click', (e) => {
     per_page: perPage,
     search: searchFilter.value.trim()
   });
-  fetch(`/api/get_encomendas.php?${params}`)
+  fetch(`/website/api/get_encomendas.php?${params}`)
     .then(res => res.json())
     .then(data => {
       if (!data.success) throw new Error(data.error || 'Erro desconhecido');

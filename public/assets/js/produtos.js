@@ -5,7 +5,7 @@ const categoryManager = {
 
     async load() {
         try {
-            const response = await fetch('/api/get_categorias2.php');
+            const response = await fetch('/website/api/get_categorias2.php');
             const data = await response.json();
             
             if (data.success) {
@@ -179,7 +179,7 @@ async function loadProducts() {
     const filterStatus = document.getElementById('filterStatus').value;
 
     try {
-        const response = await fetch(`/api/get_products.php?name=${encodeURIComponent(filterName)}&status=${filterStatus}`);
+        const response = await fetch(`/website/api/get_products.php?name=${encodeURIComponent(filterName)}&status=${filterStatus}`);
         const products = await response.json();
 
         const tbody = document.getElementById('productBody');
@@ -205,7 +205,7 @@ async function loadProducts() {
             row.innerHTML = `
                 <td>
                     ${product.imagem ?
-                    `<img src="${product.imagem}" alt="${product.nome}" class="img-thumbnail" width="50">` :
+                    `<img src="/website/${product.imagem}" alt="${product.nome}" class="img-thumbnail" width="50">` :
                     '<i class="fas fa-box-open fa-lg text-muted"></i>'}
                 </td>
                 <td>${product.nome || 'Sem nome'}</td>
@@ -260,7 +260,7 @@ async function editProduct(e) {
         const modalEdit = new bootstrap.Modal(modalElement);
         
         // Busca dados do produto
-        const productResponse = await fetch(`/api/get_details_product.php`, {
+        const productResponse = await fetch(`/website/api/get_details_product.php`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -298,7 +298,7 @@ async function editProduct(e) {
                 const imgContainer = document.createElement('div');
                 imgContainer.className = 'img-preview-item position-relative';
                 imgContainer.innerHTML = `
-                    <img src="${imagem.caminho_imagem}" class="img-thumbnail" style="height: 100px; object-fit: cover;">
+                    <img src="../website/${imagem.caminho_imagem}" class="img-thumbnail" style="height: 100px; object-fit: cover;">
                     <button type="button" class="btn btn-sm btn-danger btn-remove-img position-absolute top-0 end-0 m-1" 
                             data-img-id="${imagem.id}" title="Remover imagem">
                         <i class="fas fa-times"></i>
@@ -313,7 +313,7 @@ async function editProduct(e) {
             btn.addEventListener('click', async function() {
                 const imgId = this.getAttribute('data-img-id');
                 try {
-                    const response = await fetch('/api/remove_product_image.php', {
+                    const response = await fetch('/website/api/remove_product_image.php', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -358,7 +358,7 @@ async function editProduct(e) {
             try {
                 const formData = new FormData(this);
                 
-                const response = await fetch('/api/update_product.php', {
+                const response = await fetch('/website/api/update_product.php', {
                     method: 'POST',
                     body: formData
                 });
@@ -422,7 +422,7 @@ async function deleteProduct(e) {
         });
 
         if (result.isConfirmed) {
-            const response = await fetch(`/api/delete_product.php`, {
+            const response = await fetch(`/website/api/delete_product.php`, {
                 method: 'DELETE',
                 headers: {
                     'Content-Type': 'application/json',

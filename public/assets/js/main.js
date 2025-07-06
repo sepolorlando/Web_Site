@@ -109,7 +109,7 @@ class CartManager {
 class ProductService {
   static async fetchCategories() {
     try {
-      const response = await fetch('/api/get_categorias.php');
+      const response = await fetch('../website/api/get_categorias.php');
       if (!response.ok) throw new Error('Network response was not ok');
       return await response.json();
     } catch (error) {
@@ -121,7 +121,7 @@ class ProductService {
 
   static async fetchProducts(categoryId = 0) {
     try {
-      const response = await fetch(`/api/get_products.php?categoria_id=${categoryId}`);
+      const response = await fetch(`../website/api/get_products.php?categoria_id=${categoryId}`);
       if (!response.ok) throw new Error('Network response was not ok');
       return await response.json();
     } catch (error) {
@@ -137,7 +137,7 @@ class ProductService {
 
   static async confirmOrder(orderData) {
     try {
-      const response = await fetch('/api/finalizar_encomenda.php', {
+      const response = await fetch('../website/api/finalizar_encomenda.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
@@ -314,7 +314,7 @@ class ProductUI {
     if (cartIcon) {
       cartIcon.addEventListener('click', (e) => {
         e.preventDefault();
-        window.location.href = '/carrinho.php';
+        window.location.href = '../website/carrinho.php';
       });
     }
   }
@@ -363,7 +363,7 @@ class CartUI {
         const li = document.createElement('li');
         li.classList.add('cart-item');
         li.innerHTML = `
-          <img src="${product.imagem}" alt="${product.nome}" loading="lazy">
+          <img src="../website/${product.imagem}" alt="${product.nome}" loading="lazy">
           <div class="info">
             <strong>${product.nome}</strong>
             <p>${product.descricao ?? ''}</p>

@@ -5,9 +5,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Gestao de loja</title>
-  <link rel="stylesheet" href="/public/assets/css/home.css">
-  <link rel="stylesheet" href="/public/assets/css/produtos.css">
-  <link rel="stylesheet" href="/public/assets/css/popup.css">
+  <link rel="stylesheet" href="../../website/public/assets/css/home.css">
+  <link rel="stylesheet" href="../../website/public/assets/css/produtos.css">
+  <link rel="stylesheet" href="../../website/public/assets/css/popup.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -23,7 +23,7 @@
     <button class="toggle-btn"><i class="fas fa-bars"></i></button>
     <nav class="top-nav">
       <a href="/../"> Loja Online</a>
-      <a href="/backofice/profile.php"> PERFIL</a>
+      <a href="../website/backofice/perfil.php"> PERFIL</a>
       <a href="logout.php">
         <i class="fas fa-sign-out-alt"></i> Logout
       </a>

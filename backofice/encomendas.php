@@ -5,14 +5,14 @@ if (!isset($_SESSION['account_loggedin'])) {
     exit;
 }
 ?>
-<?php include '../includes/_barra_lateral.php'; ?>
-<?php include '../includes/header_backofice.php'; ?>
+<?php include '../../website/includes/_barra_lateral.php'; ?>
+<?php include '../../website/includes/header_backofice.php'; ?>
 
 <main class="main-content">
     <section class="slider">
-        <?php include '../backofice/partial/encomendas_partial.php'; ?>
+        <?php include '../../website/backofice/partial/encomendas_partial.php'; ?>
     </section>
 </main>
-<link rel="stylesheet" href="/public/assets/css/encomendas.css">  
-<script src="/public/assets/js/encomendas.js" defer></script>
-<?php include '../includes/footer.php'; ?>
+<link rel="stylesheet" href="../../website/public/assets/css/encomendas.css">  
+<script src="../../website/public/assets/js/encomendas.js" defer></script>
+<?php include '../../website/includes/footer.php'; ?>

@@ -1,12 +1,12 @@
 <?php
 session_start();
 if (!isset($_SESSION['account_loggedin'])) {
-  header('Location: login.php');
+  header('Location: ../website/login.php');
   exit;
 }
 ?>
-<?php include '../includes/_barra_lateral.php'; ?>
-<?php include '../includes/header_backofice.php'; ?>
+<?php include '../../website/includes/_barra_lateral.php'; ?>
+<?php include '../../website/includes/header_backofice.php'; ?>
 
 
 <main class="main-content">
@@ -15,4 +15,4 @@ if (!isset($_SESSION['account_loggedin'])) {
   </section>
 </main>
 
-<?php include '../includes/footer.php'; ?>
+<?php include '../../website/includes/footer.php'; ?>

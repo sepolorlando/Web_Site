@@ -34,8 +34,7 @@ require_once __DIR__ . '/includes/db.php';
   </div>
 </div>
 
-<script src="/public/assets/js/main.js"></script>
-<script src="/public/assets/js/carrinho.js"></script>
-<script src="/public/assets/js/checkout.js"></script>
+<script src="../website/public/assets/js/main.js"></script>
+<script src="../website/public/assets/js/checkout.js"></script>
 <?php require_once __DIR__ . '/includes/footer.php'; ?>
 

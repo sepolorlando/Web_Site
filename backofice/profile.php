@@ -1,41 +1,30 @@
 <?php
-session_start();
-if (!isset($_SESSION['account_loggedin'])) {
-    header('Location: login.php');
-    exit;
-}
+require_once __DIR__ . '../../website/includes/header_backofice.php';
 ?>
+<div class="content">
+    <div class="page-title">
+        <div class="wrap">
+            <p>Bem-vindo,
+                <strong>
+                    <?= htmlspecialchars($_SESSION['nome']) ?>
+                </strong>!
+            </p>
+        </div>
+    </div>
 
-<?php include '../includes/_barra_lateral.php'; ?>
-<?php include '../includes/header_backofice.php'; ?>
+    <div class="block">
 
-<main class="main-content">
-    <section class="slider">
-        <div class="page-title">
-            <div class="wrap">
-                <p>Bem-vindo,
-                    <strong>
-                        <?= htmlspecialchars($_SESSION['nome']) ?>
-                    </strong>!
-                </p>
-            </div>
+        <div class="profile-detail">
+            <strong>Nome completo</strong>
+            <?= htmlspecialchars($_SESSION['nome']) ?>
         </div>
 
-        <div class="block">
-
-            <div class="profile-detail">
-                <strong>Nome completo</strong>
-                <?= htmlspecialchars($_SESSION['nome']) ?>
-            </div>
-
-            <div class="profile-detail">
-                <strong>Username</strong>
-                <?= htmlspecialchars($_SESSION['account_username']) ?>
-            </div>
+        <div class="profile-detail">
+            <strong>Username</strong>
+            <?= htmlspecialchars($_SESSION['account_username']) ?>
         </div>
-    </section>
-</main>
+    </div>
+</div>
+</body>
 
-
-<script src="/public/assets/js/produtos.js"></script>
-<?php include '../includes/footer.php'; ?>
+</html>

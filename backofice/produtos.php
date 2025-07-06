@@ -5,15 +5,15 @@ if (!isset($_SESSION['account_loggedin'])) {
     exit;
 }
 ?>
-<?php include '../includes/_barra_lateral.php'; ?>
-<?php include '../includes/header_backofice.php'; ?>
+<?php include '../../website/includes/_barra_lateral.php'; ?>
+<?php include '../../website/includes/header_backofice.php'; ?>
 
 <main class="main-content">
     <section class="slider">
-         <?php include '../backofice/partial/produtos_partial.php'; ?>
+         <?php include '../../website/backofice/partial/produtos_partial.php'; ?>
     </section>
 </main>
 
 
-<script src="/public/assets/js/produtos.js"></script>
-<?php include '../includes/footer.php'; ?>
+<script src="../../website/public/assets/js/produtos.js"></script>
+<?php include '../../website/includes/footer.php'; ?>

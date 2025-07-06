@@ -23,8 +23,8 @@ if ($conta && password_verify($password, $conta['palavra_passe'])) {
     $_SESSION['palavra_passe'] = $conta['palavra_passe'];
     $_SESSION['account_data'] = $conta;
 
-    header('Location: /backofice/home.php');
+    header('Location: ../../website/backofice/home.php');
     exit;
 } else {
-    echo '<script>alert("Credenciais inválidas.");window.location.href="/backofice/login.php";</script>';
+    echo '<script>alert("Credenciais inválidas.");window.location.href="../../website/backofice/login.php";</script>';
 }

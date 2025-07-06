@@ -31,7 +31,7 @@ while ($product = $stmt->fetch(PDO::FETCH_ASSOC)) {
         'nome' => $product['nome'],
         'preco' => number_format($product['preco'], 2, ',', '.'),
         'quantidade' => $product['quantidade'],
-        'imagem' => '/public/' . strtolower($product['caminho_imagem']),
+        'imagem' => '../website/public/' . strtolower($product['caminho_imagem']),
     ];
 }
 
