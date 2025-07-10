@@ -15,4 +15,4 @@ if (!isset($_SESSION['account_loggedin'])) {
   </section>
 </main>
 
-<?php include '../../website/includes/footer.php'; ?>
+<?php include '../../website/includes/footer_backofice.php'; ?>

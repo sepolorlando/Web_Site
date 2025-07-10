@@ -1,7 +1,7 @@
 <?php
 // Configurações do banco de dados
 define('DB_HOST', 'localhost');
-define('DB_PORT', '3306');  // troque se usar outra porta no XAMPP
+define('DB_PORT', '3307');  // troque se usar outra porta no XAMPP
 define('DB_NAME', 'mercearia_online');
 define('DB_USER', 'root');
 define('DB_PASS', '');

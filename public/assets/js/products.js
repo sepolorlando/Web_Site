@@ -215,7 +215,7 @@ async function loadProducts() {
                     '<span class="badge bg-success">Publicado</span>' :
                     '<span class="badge bg-secondary">Não publicado</span>'}
                 </td>
-                <td class="text-end">${precoFormatado} CVE</td>
+                <td class="text-end">${precoFormatado} €</td>
                 <td class="text-center">
                     <button class="btn btn-sm btn-outline-primary btn-edit" data-id="${product.id}">
                         <i class="fas fa-edit"></i>

@@ -34,7 +34,7 @@ window.addEventListener('click', (e) => {
     per_page: perPage,
     search: searchFilter.value.trim()
   });
-  fetch(`/website/api/get_encomendas.php?${params}`)
+  fetch(`/website/api/get_orders.php?${params}`)
     .then(res => res.json())
     .then(data => {
       if (!data.success) throw new Error(data.error || 'Erro desconhecido');
@@ -76,7 +76,7 @@ window.addEventListener('click', (e) => {
           ? e.itens.reduce((sum, i) => sum + (i.quantidade||0), 0)
           : 0;
         const preco = parseFloat(e.preco_total) || 0;
-        const precoFmt = preco.toFixed(2) + ' ECV';
+        const precoFmt = preco.toFixed(2) + ' €';
         const row = document.createElement('tr');
         row.innerHTML = `
           <td>#${e.id||'–'}</td>
@@ -122,7 +122,7 @@ window.addEventListener('click', (e) => {
       precoTotal.toLocaleString('pt-PT', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-      }) + ' ECV';
+      }) + ' €';
     
     // Preenche os itens
     const itemsContainer = document.getElementById('modalItensLista');
@@ -146,9 +146,9 @@ window.addEventListener('click', (e) => {
             return `
               <tr>
                 <td>${item.produto_nome || 'N/A'}</td>
-                <td>${(parseFloat(item.produto_preco) || 0).toFixed(2)} ECV</td>
+                <td>${(parseFloat(item.produto_preco) || 0).toFixed(2)} €</td>
                 <td>${item.quantidade || 0}</td>
-                <td>${subtotal.toFixed(2)} ECV</td>
+                <td>${subtotal.toFixed(2)} €</td>
               </tr>
             `;
           }).join('')}

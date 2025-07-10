@@ -36,47 +36,6 @@ function verificarCarrinhoVazio() {
   return Object.keys(carrinho).length === 0;
 }
 
-// Calcular idade a partir da data de nascimento
-function calcularIdade(dataNascimento) {
-  if (!dataNascimento) return null;
-  
-  const nascimento = new Date(dataNascimento);
-  const hoje = new Date();
-  
-  let idade = hoje.getFullYear() - nascimento.getFullYear();
-  const mesAtual = hoje.getMonth();
-  const mesNascimento = nascimento.getMonth();
-  
-  if (mesAtual < mesNascimento || 
-      (mesAtual === mesNascimento && hoje.getDate() < nascimento.getDate())) {
-    idade--;
-  }
-  
-  return idade;
-}
-
-// ============== EVENT LISTENERS ==============
-
-// Validação da idade no formulário principal
-document.getElementById('data_nascimento')?.addEventListener('change', function() {
-  const idade = calcularIdade(this.value);
-  document.getElementById('idade').value = idade || '';
-});
-
-// Validação da idade no modal
-document.getElementById('data_nascimento')?.addEventListener('change', function() {
-  const idade = calcularIdade(this.value);
-  document.getElementById('idade').value = idade || '';
-});
-
-// Validação manual da idade
-document.getElementById('idade')?.addEventListener('change', function() {
-  if (this.value < 18) {
-    alert('É necessário ter pelo menos 18 anos para finalizar a compra.');
-    this.focus();
-  }
-});
-
 // Formulário principal de checkout
 document.getElementById('checkout-form')?.addEventListener('submit', function(e) {
   e.preventDefault();

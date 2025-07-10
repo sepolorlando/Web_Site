@@ -27,7 +27,7 @@
                 </tr>
             </thead>
             <tbody id="productBody">
-                <!-- preenchido dinamicamente por produtos.js -->
+                <!-- preenchido dinamicamente por products.js -->
             </tbody>
         </table>
     </div>
@@ -66,7 +66,7 @@
                                 <label class="form-label">Preço:</label>
                                 <div class="input-group">
                                     <input type="number" name="preco" class="form-control" step="0.01" min="0" value="0.00" required>
-                                    <span class="input-group-text">CVE</span>
+                                    <span class="input-group-text">€</span>
                                 </div>
                             </div>
                         </div>
@@ -131,7 +131,7 @@
                                             <label class="form-label">Preço:</label>
                                             <div class="input-group">
                                                 <input type="number" name="preco" class="form-control" step="0.01" min="0" required>
-                                                <span class="input-group-text">CVE</span>
+                                                <span class="input-group-text">€</span>
                                             </div>
                                         </div>
                                     </div>

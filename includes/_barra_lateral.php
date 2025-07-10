@@ -14,7 +14,7 @@
       </a>
     </li>
     <li>
-      <a href="../../../website/backofice/produtos.php">
+      <a href="../../../website/backofice/products.php">
         <i class="fas fa-tags"></i>
         <span> Produtos</span>
         <i class="fas fa-chevron-right submenu-icon"></i>

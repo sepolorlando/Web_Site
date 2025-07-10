@@ -12,11 +12,11 @@ require_once __DIR__ . '../includes/header.php';
 
     <div class="cart-summary">
       <h3>Total</h3>
-      <p>Entrega: <span>0,00 $</span></p>
-      <p>Subtotal: <span class="subtotal">0,00 $</span></p>
-      <p>Impostos: <span>0,00 $</span></p>
+      <p>Entrega: <span>0,00 €</span></p>
+      <p>Subtotal: <span class="subtotal">0,00 €</span></p>
+      <p>Impostos: <span>0,00 €</span></p>
       <hr>
-      <p><strong>Total:</strong> <strong class="total">0,00 $</strong></p>
+      <p><strong>Total:</strong> <strong class="total">0,00 €</strong></p>
 
       <button id="btnOpenCheckout" class="btn btn-primary"> Checkout</button>
       <a href="index.php" class="continue-link">← Continuar comprando</a>

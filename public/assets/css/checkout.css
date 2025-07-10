@@ -57,7 +57,7 @@ input:focus {
 }
 
 button[type="submit"] {
-    background-color: #f97316;
+    background-color: #ed1c24;
     color: white;
     padding: 12px;
     font-weight: bold;
@@ -71,7 +71,7 @@ button[type="submit"] {
 }
 
 button[type="submit"]:hover {
-    background-color: #ea580c;
+    background-color: #9c1419;
 }
 
 #mensagem-sucesso {

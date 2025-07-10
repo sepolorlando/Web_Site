@@ -1,11 +1,11 @@
 // ============== UTILITIES ==============
 class Utils {
   static formatCurrency(value) {
-    return new Intl.NumberFormat('pt-CV', {
-      style: 'currency',
-      currency: 'CVE'
-    }).format(value);
-  }
+  return new Intl.NumberFormat('pt-PT', {
+    style: 'currency',
+    currency: 'EUR'
+  }).format(value);
+}
 
   static parseCurrency(value) {
     return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.'));
@@ -123,7 +123,7 @@ class ProductService {
 
   static async confirmOrder(orderData) {
     try {
-      const response = await fetch('../website/api/finalizar_encomenda.php', {
+      const response = await fetch('../website/api/end_order.php', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(orderData)
@@ -479,7 +479,7 @@ class CartUI {
           this.renderCart();
           Swal.fire(`Encomenda #${result.encomenda_id} criada com sucesso!`, 'success');
 
-          window.location.href = '/';
+          window.location.href = 'website/';
         } else {
           throw new Error(result.message || 'Erro ao processar encomenda');
         }
