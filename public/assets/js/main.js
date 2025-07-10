@@ -11,17 +11,7 @@ class Utils {
     return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.'));
   }
 
-  static showAlert(message, type = 'error') {
-    // Implementar um sistema de notificação bonito
-    const alertDiv = document.createElement('div');
-    alertDiv.className = `alert ${type}`;
-    alertDiv.textContent = message;
-    document.body.appendChild(alertDiv);
-
-    setTimeout(() => {
-      alertDiv.remove();
-    }, 3000);
-  }
+ 
 }
 
 // ============== CART MANAGER ==============
@@ -49,7 +39,8 @@ class CartManager {
     const available = availableStock - reserved;
 
     if (available < quantity) {
-      throw new Error('Quantidade em estoque insuficiente');
+      showAlert('warning', 'Quantidade em estoque insuficiente', '');
+      return;
     }
 
     this.cart[productId] = (this.cart[productId] || 0) + quantity;
@@ -67,8 +58,9 @@ class CartManager {
       const reserved = this.reservedStock[productId] || 0;
       const available = availableStock - reserved;
 
-      if (available < difference) {
-        throw new Error('Quantidade em estoque insuficiente');
+      if (available < quantity) {
+        showAlert('warning', 'Quantidade em estoque insuficiente', '');
+        return;
       }
     }
 
@@ -113,8 +105,7 @@ class ProductService {
       if (!response.ok) throw new Error('Network response was not ok');
       return await response.json();
     } catch (error) {
-      console.error('Error fetching categories:', error);
-      Utils.showAlert('Não foi possível carregar as categorias');
+      showAlert('error','Não foi possível carregar as categorias', 'Erro')
       return [];
     }
   }
@@ -125,12 +116,7 @@ class ProductService {
       if (!response.ok) throw new Error('Network response was not ok');
       return await response.json();
     } catch (error) {
-      console.error('Error fetching products:', error);
-      Swal.fire(
-        'Erro!',
-        error.error || 'Não foi possível carregar os produtos.',
-        'error'
-      );
+       showAlert('error', 'Não foi possível carregar os produtos.', 'Erro');
       return [];
     }
   }
@@ -384,8 +370,7 @@ class CartUI {
       this.setupCartEvents();
       this.updateCartCounter();
     } catch (error) {
-      console.error('Error rendering cart:', error);
-      Utils.showAlert('Não foi possível carregar o carrinho');
+      showAlert('error', 'Não foi possível carregar o carrinho', 'Erro');
     }
   }
 
@@ -464,7 +449,8 @@ class CartUI {
 
     btnOpen.addEventListener('click', () => {
       if (!this.cartManager.getTotalItems()) {
-        return Utils.showAlert('Seu carrinho está vazio!');
+        showAlert('error', 'Seu carrinho está vazio!', 'Erro');
+        return
       }
       modal.style.display = 'flex';
     });
@@ -492,7 +478,7 @@ class CartUI {
           modal.style.display = 'none';
           this.renderCart();
           Swal.fire(`Encomenda #${result.encomenda_id} criada com sucesso!`, 'success');
-        
+
           window.location.href = '/';
         } else {
           throw new Error(result.message || 'Erro ao processar encomenda');

@@ -43,3 +43,5 @@
   </header>
 
   <script src="../website/public/assets/js/main.js" defer></script>
+  
+  <script src="../website/public/assets/js/alert.js" defer></script>
