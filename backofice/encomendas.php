@@ -15,4 +15,3 @@ if (!isset($_SESSION['account_loggedin'])) {
 </main>
 <link rel="stylesheet" href="../../website/public/assets/css/encomendas.css">  
 <script src="../../website/public/assets/js/orders.js" defer></script>
-<?php include '../../website/includes/footer.php'; ?>

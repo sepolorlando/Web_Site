@@ -1,17 +1,17 @@
 // ============== UTILITIES ==============
 class Utils {
   static formatCurrency(value) {
-  return new Intl.NumberFormat('pt-PT', {
-    style: 'currency',
-    currency: 'EUR'
-  }).format(value);
-}
+    return new Intl.NumberFormat('pt-PT', {
+      style: 'currency',
+      currency: 'EUR'
+    }).format(value);
+  }
 
   static parseCurrency(value) {
     return parseFloat(value.replace(/[^\d,-]/g, '').replace(',', '.'));
   }
 
- 
+
 }
 
 // ============== CART MANAGER ==============
@@ -105,7 +105,7 @@ class ProductService {
       if (!response.ok) throw new Error('Network response was not ok');
       return await response.json();
     } catch (error) {
-      showAlert('error','Não foi possível carregar as categorias', 'Erro')
+      showAlert('error', 'Não foi possível carregar as categorias', 'Erro')
       return [];
     }
   }
@@ -116,7 +116,7 @@ class ProductService {
       if (!response.ok) throw new Error('Network response was not ok');
       return await response.json();
     } catch (error) {
-       showAlert('error', 'Não foi possível carregar os produtos.', 'Erro');
+      showAlert('error', 'Não foi possível carregar os produtos.', 'Erro');
       return [];
     }
   }
@@ -477,9 +477,14 @@ class CartUI {
           this.cartManager.clearCart();
           modal.style.display = 'none';
           this.renderCart();
-          Swal.fire(`Encomenda #${result.encomenda_id} criada com sucesso!`, 'success');
+          Swal.fire({
+            icon: 'success',
+            title: 'success',
+            text: `Encomenda #${result.encomenda_id} criada com sucesso!`,
+            timer: 5000, showConfirmButton: true
+          });
 
-          window.location.href = 'website/';
+          window.location.href = '../website';
         } else {
           throw new Error(result.message || 'Erro ao processar encomenda');
         }

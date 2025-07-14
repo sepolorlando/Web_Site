@@ -9,13 +9,13 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 try {
-    // 1) coleta campos básicos
+    // 1) Coleta campos básicos
     $nome  = trim($_POST['nome'] ?? '');
     $qtde  = (int) ($_POST['quantidade'] ?? 0);
     $preco = number_format((float)($_POST['preco'] ?? 0), 2, '.', '');
     $pub   = isset($_POST['publicado']) ? 1 : 0;
 
-    // 2) cria o produto
+    // 2) Cria o produto
     $sql = "INSERT INTO produtos (nome, quantidade, preco, publicado)
             VALUES (:nome, :qtde, :preco, :pub)";
     $stmt = $conn->prepare($sql);
@@ -27,50 +27,48 @@ try {
     ]);
     $produtoId = $conn->lastInsertId();
 
-    // 3) garante que a pasta uploads exista
-    $uploadDir = realpath(__DIR__ . 'public/uploads');
-    if (!$uploadDir) {
-        // cria com permissão 0755
-        mkdir(__DIR__ . 'public/uploads', 0755, true);
-        $uploadDir = realpath(__DIR__ . 'public//uploads');
+    // 3) Configurações do upload - CAMINHO CORRIGIDO
+    $uploadDir = $_SERVER['DOCUMENT_ROOT'] . '/website/public/uploads/';
+    
+    // Garante que a pasta existe e tem permissões
+    if (!file_exists($uploadDir)) {
+        if (!mkdir($uploadDir, 0755, true)) {
+            throw new Exception("Falha ao criar diretório de uploads");
+        }
     }
 
-    // 4) Fprocessa cada imagem e insere em imagens_produtos
-    if (
-        isset($_FILES['imagens'])
-        && is_array($_FILES['imagens']['tmp_name'])
-    ){
+    // 4) Processa cada imagem
+    if (isset($_FILES['imagens']) && is_array($_FILES['imagens']['tmp_name'])) {
         foreach ($_FILES['imagens']['tmp_name'] as $i => $tmpPath) {
-            // certifique-se de que veio um upload válido
             if ($tmpPath && is_uploaded_file($tmpPath)) {
-                // ext original
-                $ext = strtolower(
-                    pathinfo($_FILES['imagens']['name'][$i], PATHINFO_EXTENSION)
-                );
-
-                // nome único e seguro
-                $basename = uniqid("prod_{$produtoId}_", true);
-                $filename = "{$basename}_{$i}.{$ext}";
-
-                // destino absoluto (ajustado ao seu DOCUMENT_ROOT)
-                $uploadDir = rtrim($_SERVER['DOCUMENT_ROOT'], DIRECTORY_SEPARATOR)
-                        . DIRECTORY_SEPARATOR . 'public/uploads';
-                // cria se faltando
-                if (!is_dir($uploadDir)) {
-                    mkdir($uploadDir, 0755, true);
+                // Valida o tipo de arquivo
+                $finfo = finfo_open(FILEINFO_MIME_TYPE);
+                $mime = finfo_file($finfo, $tmpPath);
+                finfo_close($finfo);
+                
+                $allowedTypes = [
+                    'image/jpeg' => 'jpg',
+                    'image/png' => 'png',
+                    'image/gif' => 'gif',
+                    'image/webp' => 'webp'
+                ];
+                
+                if (!in_array($mime, array_keys($allowedTypes))) {
+                    continue; // Pula arquivos não permitidos
                 }
+                
+                $ext = $allowedTypes[$mime];
+                $basename = uniqid("prod_{$produtoId}_", true);
+                $filename = "{$basename}.{$ext}";
+                $target = $uploadDir . $filename;
 
-                $target = $uploadDir . DIRECTORY_SEPARATOR . $filename;
-
-                // move e, se OK, grava no banco
                 if (move_uploaded_file($tmpPath, $target)) {
-                    $caminho = 'uploads/' . $filename;
-                    $sqlImg  = "
-                        INSERT INTO imagens_produtos 
-                            (produto_id, caminho_imagem, `ordem`)
-                        VALUES 
-                            (:pid, :caminho, :ordem)
-                    ";
+                    // CAMINHO RELATIVO CORRIGIDO (sem /website)
+                    $caminho = '/uploads/' . $filename;
+                    
+                    $sqlImg = "INSERT INTO imagens_produtos 
+                              (produto_id, caminho_imagem, `ordem`)
+                              VALUES (:pid, :caminho, :ordem)";
                     $stImg = $conn->prepare($sqlImg);
                     $stImg->execute([
                         ':pid'     => $produtoId,
@@ -78,13 +76,14 @@ try {
                         ':ordem'   => $i + 1,
                     ]);
                 } else {
-                    // log de erro em caso de falha no move
-                    error_log("Falha ao gravar imagem #{$i} para o produto {$produtoId}");
+                    error_log("Falha ao mover imagem: " . $_FILES['imagens']['name'][$i]);
+                    throw new Exception("Falha ao mover arquivo enviado");
                 }
             }
         }
     }
-    // // 5) processa categorias (form deve ter name="categorias[]" múltiplo)
+
+    // 5) Processa categorias
     if (!empty($_POST['categorias']) && is_array($_POST['categorias'])) {
         $sqlCat = "INSERT INTO produto_categorias (produto_id,categoria_id)
                    VALUES (:pid, :cid)";
@@ -97,10 +96,10 @@ try {
         }
     }
 
-    echo json_encode(['success'=>true,'id'=>$produtoId]);
+    echo json_encode(['success'=>true, 'id'=>$produtoId]);
 
 } catch (Exception $e) {
     http_response_code(500);
     error_log("Erro create_product: ".$e->getMessage());
-    echo json_encode(['success'=>false,'error'=>'Falha ao criar produto']);
+    echo json_encode(['success'=>false, 'message'=>'Falha ao criar produto: ' . $e->getMessage()]);
 }

@@ -9,11 +9,10 @@ const categoryManager = {
             const data = await response.json();
             
             if (data.success) {
-                this.categories = data.categories || data.data; // Compatível com diferentes formatos de resposta
+                this.categories = data.categories || data.data;
                 this.loaded = true;
                 console.log('Categorias carregadas:', this.categories);
             } else {
-                console.error('Erro ao carregar categorias:', data.message || data.error);
                 throw new Error(data.message || 'Erro ao carregar categorias');
             }
             return this.categories;
@@ -53,7 +52,7 @@ const categoryManager = {
 };
 
 // Inicialização quando o DOM estiver pronto
-document.addEventListener('DOMContentLoaded', function () {
+document.addEventListener('DOMContentLoaded', function() {
     // Carrega categorias e produtos ao iniciar
     loadCategoriesAndProducts();
 
@@ -64,12 +63,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const btnNovo = document.getElementById('btnNovo');
     const modalAdd = new bootstrap.Modal(document.getElementById('modalAdd'));
 
-    btnNovo.addEventListener('click', function () {
+    btnNovo.addEventListener('click', function() {
         prepareModal(modalAdd);
     });
 
     // Preview de imagens antes do upload (modal add)
-    document.getElementById('img-input-modal').addEventListener('change', function (e) {
+    document.getElementById('img-input-modal').addEventListener('change', function(e) {
         const preview = document.getElementById('img-preview-modal');
         preview.innerHTML = '';
 
@@ -79,7 +78,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 const reader = new FileReader();
 
-                reader.onload = function (event) {
+                reader.onload = function(event) {
                     const imgContainer = document.createElement('div');
                     imgContainer.className = 'position-relative d-inline-block';
                     imgContainer.innerHTML = `
@@ -90,7 +89,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     `;
                     preview.appendChild(imgContainer);
 
-                    // Adiciona evento para remover imagem do preview
                     imgContainer.querySelector('.btn-remove-new-img').addEventListener('click', function() {
                         imgContainer.remove();
                     });
@@ -102,13 +100,12 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Submit do formulário de adição
-    document.getElementById('form-add').addEventListener('submit', async function (e) {
+    document.getElementById('form-add').addEventListener('submit', async function(e) {
         e.preventDefault();
 
         try {
             const formData = new FormData(this);
             
-            // Validação básica
             if (!formData.get('nome') || !formData.get('categoria')) {
                 throw new Error('Preencha todos os campos obrigatórios');
             }
@@ -151,7 +148,7 @@ async function loadCategoriesAndProducts() {
         loadProducts();
     } catch (error) {
         console.error('Erro ao carregar categorias:', error);
-        loadProducts(); // Tenta carregar produtos mesmo com erro nas categorias
+        loadProducts();
     }
 }
 
@@ -193,7 +190,6 @@ async function loadProducts() {
         products.forEach(product => {
             const row = document.createElement('tr');
 
-            // Formata o preço
             let precoFormatado = '0,00';
             if (product.preco) {
                 const precoNumerico = typeof product.preco === 'string' 
@@ -229,7 +225,6 @@ async function loadProducts() {
             tbody.appendChild(row);
         });
 
-        // Adiciona eventos aos botões
         document.querySelectorAll('.btn-edit').forEach(btn => {
             btn.addEventListener('click', editProduct);
         });
@@ -259,15 +254,7 @@ async function editProduct(e) {
 
         const modalEdit = new bootstrap.Modal(modalElement);
         
-        // Busca dados do produto
-        const productResponse = await fetch(`/website/api/get_details_product.php`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ id: productId })
-        });
-
+        const productResponse = await fetch(`/website/api/get_details_product.php?id=${productId}`);
         const productData = await productResponse.json();
         
         if (!productData.success) {
@@ -276,80 +263,41 @@ async function editProduct(e) {
 
         const product = productData.data;
 
-        // Preenche o formulário
+        // Preenche os campos básicos
         formEdit.querySelector('[name="id"]').value = product.id;
         formEdit.querySelector('[name="nome"]').value = product.nome || '';
         formEdit.querySelector('[name="quantidade"]').value = product.quantidade || 0;
-        formEdit.querySelector('[name="preco"]').value = product.preco || 0.00;
-        formEdit.querySelector('#chkPublicadoEdit').checked = product.publicado || false;
+        formEdit.querySelector('[name="preco"]').value = product.preco ? product.preco.toFixed(2) : '0.00';
+        formEdit.querySelector('[name="publicado"]').checked = product.publicado || false;
         
-        // Preenche categoria
+        // CARREGAMENTO DE CATEGORIAS - CORREÇÃO PRINCIPAL
         const categoriaSelect = formEdit.querySelector('[name="categoria"]');
-        await categoryManager.ensureLoaded();
-        const selectedCategory = product.categorias && product.categorias.length > 0 ? product.categorias[0] : null;
-        categoryManager.fillSelect(categoriaSelect, selectedCategory);
-        
-        // Carrega preview das imagens
-        const imgPreview = document.getElementById('img-preview-edit');
-        imgPreview.innerHTML = '';
-        
-        if (product.imagens?.length > 0) {
-            product.imagens.forEach(imagem => {
-                const imgContainer = document.createElement('div');
-                imgContainer.className = 'img-preview-item position-relative';
-                imgContainer.innerHTML = `
-                    <img src="../website/${imagem.caminho_imagem}" class="img-thumbnail" style="height: 100px; object-fit: cover;">
-                    <button type="button" class="btn btn-sm btn-danger btn-remove-img position-absolute top-0 end-0 m-1" 
-                            data-img-id="${imagem.id}" title="Remover imagem">
-                        <i class="fas fa-times"></i>
-                    </button>
-                `;
-                imgPreview.appendChild(imgContainer);
-            });
+        if (categoriaSelect) {
+            // Garante que as categorias estão carregadas
+            await categoryManager.ensureLoaded();
+            
+            // Preenche o select com as categorias
+            // Assumindo que product.categorias é um array e pegamos o primeiro ID
+            const categoriaId = product.categorias && product.categorias.length > 0 ? product.categorias[0] : null;
+            categoryManager.fillSelect(categoriaSelect, categoriaId);
         }
         
-        // Configura evento de remoção de imagens
-        imgPreview.querySelectorAll('.btn-remove-img').forEach(btn => {
-            btn.addEventListener('click', async function() {
-                const imgId = this.getAttribute('data-img-id');
-                try {
-                    const response = await fetch('/website/api/remove_product_image.php', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ 
-                            image_id: imgId,
-                            product_id: productId 
-                        })
-                    });
-                    
-                    const result = await response.json();
-                    
-                    if (!result.success) {
-                        throw new Error(result.message || 'Erro ao remover imagem');
-                    }
-                    
-                    this.parentElement.remove();
-                    
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Sucesso!',
-                        text: 'Imagem removida com sucesso',
-                        timer: 1500,
-                        showConfirmButton: false
-                    });
-                    
-                } catch (error) {
-                    console.error('Error:', error);
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Erro',
-                        text: error.message || 'Falha ao remover imagem'
-                    });
-                }
-            });
-        });
+        // Seção de imagens
+        const imgPreview = document.getElementById('img-preview-edit');
+        if (imgPreview) {
+            imgPreview.innerHTML = '';
+            
+            if (product.imagens?.length > 0) {
+                product.imagens.forEach(imagem => {
+                    const imgElement = document.createElement('img');
+                    imgElement.src = '/website/public' + (imagem.caminho_imagem || imagem);
+                    imgElement.className = 'img-thumbnail me-2';
+                    imgElement.style.height = '100px';
+                    imgElement.style.objectFit = 'cover';
+                    imgPreview.appendChild(imgElement);
+                });
+            }
+        }
         
         // Configura submit do formulário
         const submitHandler = async function(e) {

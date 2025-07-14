@@ -1,4 +1,3 @@
-
 <aside class="sidebar">
   <ul class="sidebar-menu">
     <li class="active">
@@ -14,11 +13,14 @@
       </a>
     </li>
     <li>
-      <a href="../../../website/backofice/products.php">
-        <i class="fas fa-tags"></i>
-        <span> Produtos</span>
-        <i class="fas fa-chevron-right submenu-icon"></i>
-      </a>
+      <!-- <?php if ($_SESSION['perfil'] !== 'Cliente'): ?> -->
+        <a href="../../../website/backofice/products.php">
+          <i class="fas fa-tags"></i>
+          <span> Produtos</span>
+          <i class="fas fa-chevron-right submenu-icon"></i>
+        </a>
+      <!-- <?php endif; ?> -->
+
     </li>
   </ul>
 </aside>

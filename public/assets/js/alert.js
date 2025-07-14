@@ -1,9 +1,9 @@
-function showAlert(icon,mesage, title) {
+function showAlert(type,mesage, title) {
     Swal.fire({
-        icon: icon,
+        icon: type,
         title: title,
         text: mesage,
-        timer: 2000,
-        showConfirmButton: false
+        timer: 4000,
+        showConfirmButton: type !== 'success'
     });
 }
